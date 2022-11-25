@@ -1,25 +1,28 @@
-const Discord = require('discord.js');
+const Discord = require("discord.js")
 
 module.exports = {
   name: "ping",
-  aliases: ["p"],
+  description: "Veja o ping do bot.",
+  type: Discord.ApplicationCommandType.ChatInput,
 
-  run: async(client, message) => {
+  run: async (client, interaction) => {
 
-      let embed = new Discord.EmbedBuilder()
-      .setColor("Random")
-      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-      .setDescription(`Olá ${message.author}, pong`)
+    let ping = client.ws.ping;
 
-      let embed2 = new Discord.EmbedBuilder()
-      .setColor("Random")
-      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-      .setDescription(`Olá ${message.author}, pong🏓(zuera garai kkkkk ${client.ws.ping}ms)`)
+    let embed_1 = new Discord.EmbedBuilder()
+    .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL({ dynamic: true }) })
+    .setDescription(`pong 🏓 kkkkk, pera ai zé já vo ve.`)
+    .setColor("Random");
 
-      message.reply({ embeds: [embed] }).then((msg) => {
-        setTimeout(() => {
-          msg.edit({ embeds: [embed2] })
-        }, 3000)
-      })
+    let embed_2 = new Discord.EmbedBuilder()
+    .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL({ dynamic: true }) })
+    .setDescription(`pong 🏓 kkkkk (meu ping está em \`${ping}ms\`.)`)
+    .setColor("Random");
+
+    interaction.reply({ embeds: [embed_1] }).then( () => {
+        setTimeout( () => {
+            interaction.editReply({ embeds: [embed_2] })
+        }, 2000)
+    })
   }
 }

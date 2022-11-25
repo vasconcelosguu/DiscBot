@@ -1,65 +1,45 @@
 const Discord = require('discord.js')
 const fetch = require('node-fetch');
 const messages = require('../../database/messages.json').pokemons;
-const {empty, moreThanOne, invalidPoke} = messages;
+const {invalidPoke} = messages;
 
 module.exports = {
   name: 'poke',
-
-  run: async(client, message, args) => {
-
-    if (!args.length) {
-      let error1 = new Discord.EmbedBuilder()
-      .setColor('Random')
-      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-      .setDescription(empty);
-
-      message.reply({ embeds: [error1] })
-      return
+  description: 'Escolher um pokemon',
+  type: Discord.ApplicationCommandType.ChatInput,
+  options: [
+    {
+      name: 'pokemon',
+      description: 'Qual é o poke?',
+      type: Discord.ApplicationCommandOptionType.String,
+      required: true
     }
-    if (args.length > 1) {
-      let error2 = new Discord.EmbedBuilder()
+  ],
+
+  run: async(client, interaction) => {
+    const choosedPoke = interaction.options.getString('pokemon')
+
+    const poke = await getPokeFromApi(choosedPoke);
+
+    if (!poke) {
+      const embed_error = new Discord.EmbedBuilder()
       .setColor('Random')
-      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-      .setDescription(moreThanOne)
-
-      message.reply({ embeds: [error2] })
-      return
-    }
-
-    const poke = await getPokeFromApi(args[0])
-
-    if(!poke) {
-      let error3 = new Discord.EmbedBuilder()
-      .setColor('Random')
-      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
       .setDescription(invalidPoke)
 
-      message.reply({ embeds: [error3] })
+      interaction.reply({ embeds : [embed_error] })
       return
     }
 
-    let embed = new Discord.EmbedBuilder()
-    .setColor('Random')
-    .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-    .setDescription('pera ae rapidin')
+      const embed_1 = new Discord.EmbedBuilder()
+      .setColor('Random')
+      .setAuthor({ name: interaction.user.username })
+      .setDescription(`Este é o ${poke.name}`)
+      .setImage(poke.sprites.front_default)
 
-    let returnCard = new Discord.EmbedBuilder()
-    .setColor('Random')
-    .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-    .setImage(poke.sprites.front_default)
-    .setDescription(`Este é o ${poke.name}`)
+      interaction.reply({ embeds: [embed_1] })
 
-
-    message.reply({ embeds: [embed] }).then((msg) => {
-      setTimeout(() => {
-        msg.edit({ embeds: [returnCard] })
-      }, 3500)
-    })
-
-
-  }
-};
+}, 
+}
 
 const getPokeFromApi = async (pokeName) => {
   const {pokeApi} = require('../../database/apis.json');
@@ -67,4 +47,4 @@ const getPokeFromApi = async (pokeName) => {
 
   if (poke.status === 404) return;
   else return await poke.json();
-};
+}

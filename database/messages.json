@@ -2,8 +2,6 @@
   "defaultError": "Deu ruim, bixo. Chama meus pais!",
   "isNotGuild": "Meus pais não me deixam falar por aqui, chama pelo server.",
   "pokemons": {
-    "empty": "Se for pedir poke, escreve um né amigão",
-    "moreThanOne": "Um de cada vez irmão!!",
-    "invalidPoke": "Desaprendeu a escrever? Escreva o nome certo. Oxe!"
+    "invalidPoke": "Nome Errado paizão!! (Lembre-se de pedir um por vez!!!)"
   }
 }
