@@ -1,18 +1,19 @@
 const Discord = require('discord.js');
 
 module.exports = {
-  name: 'dm',
+  name: 'direct',
+  description: 'Mensagem particular para algum usuario!',
   type: Discord.ApplicationCommandType.ChatInput,
   options: [
     {
-      name: 'usuário',
-      description: 'Pra quem',
+      name: 'user',
+      description: 'Pessoa que irá receber:',
       type: Discord.ApplicationCommandOptionType.User,
       required: true,
     },
     {
-      name: 'mensagem', 
-      description: 'escreve algo ae',
+      name: 'message', 
+      description: 'Mensagem que você vai enviar:',
       type: Discord.ApplicationCommandOptionType.String,
       required: true,
     },
@@ -21,11 +22,10 @@ module.exports = {
   run: async (client, interaction) => {
     if (!interaction.member.permissions.has(Discord.
         PermissionFlagsBits.ManageGuild)) {
-      interaction.reply({content: `Você não possui permissão para
-       utilizar este comando!`, ephemeral: true});
+      interaction.reply({content: `Você não é adm 😿!`, ephemeral: true});
     } else {
       const user = interaction.options.getUser('user');
-      const msg = interaction.options.getString('mensagem');
+      const msg = interaction.options.getString('message');
 
       const embed = new Discord.EmbedBuilder()
           .setColor('Random')
@@ -35,17 +35,16 @@ module.exports = {
 
       user.send({embeds: [embed]}).then( () => {
         const emb = new Discord.EmbedBuilder()
-            .setColor('Green')
-            .setDescription(`Olá ${interaction.user},
-            a mensagem foi enviada para ${user} com sucesso!`);
+            .setColor('Random')
+            .setDescription(`Salve ${interaction.user}, 
+            a mensagem chegou para ${user} ✉`);
 
         interaction.reply({embeds: [emb]});
       }).catch(() => {
         const emb = new Discord.EmbedBuilder()
             .setColor('Red')
-            .setDescription(`Olá ${interaction.user},
-            a mensagem não foi enviada para ${user},
-            pois o usuário está com a DM fechada!`);
+            .setDescription(`Salve ${interaction.user}, o ${user},
+            ta com a DM fechada🔒`);
 
         interaction.reply({embeds: [emb]});
       });
