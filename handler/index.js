@@ -13,7 +13,7 @@ const SlashsArray = []
   files = require(`../commands/${subfolder}/${files}`);
   if(!files?.name) return;
   client.slashCommands.set(files?.name, files);
-   
+  
   SlashsArray.push(files)
   });
     });

@@ -1,5 +1,5 @@
-const Discord = require('discord.js')
 const fetch = require('node-fetch');
+const Discord = require('discord.js')
 const messages = require('../../database/messages.json').pokemons;
 const {invalidPoke} = messages;
 
