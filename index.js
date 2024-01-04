@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
-
-const config = require("./database/config.json")
+require("dotenv").config();
+const token = process.env.TOKEN;
 
 const client = new Discord.Client({ 
   intents: [ 
@@ -35,4 +35,4 @@ client.slashCommands = new Discord.Collection()
 
 require('./handler')(client)
 
-client.login(config.token)
+client.login(token)
