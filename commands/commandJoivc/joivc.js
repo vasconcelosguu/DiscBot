@@ -28,7 +28,7 @@ module.exports = {
       return interaction.editReply('Falha ao entrar no canal de voz em 30 segundos, tente novamente mais tarde.');
     }
 
-    const songUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Rick Astley - Never Gonna Give You Up
+    const songUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
     const stream = await ytdl(songUrl);
     const resource = createAudioResource(stream);
     const player = createAudioPlayer();
