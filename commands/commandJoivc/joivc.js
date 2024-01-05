@@ -1,7 +1,6 @@
-const Discord = require("discord.js");
-const ytdl = require('ytdl-core');
-const { MessageEmbed } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, entersState, StreamType, AudioPlayerStatus, VoiceConnectionStatus } = require('@discordjs/voice');
+const { entersState, joinVoiceChannel, VoiceConnectionStatus, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const ytdl = require('ytdl-core-discord');
+const Discord = require('discord.js');
 
 module.exports = {
   name: "joinvc",
@@ -9,24 +8,40 @@ module.exports = {
   type: Discord.ApplicationCommandType.ChatInput,
 
   run: async (client, interaction) => {
-    if (!interaction.member.voice.channel) {
-      return interaction.reply('Você precisa estar em um canal de voz!');
+    await interaction.deferReply();
+
+    const voiceChannelId = interaction.member.voice.channelId;
+    if (!voiceChannelId) {
+      return interaction.editReply('Você precisa estar em um canal de voz!');
     }
 
     const connection = joinVoiceChannel({
-      channelId: interaction.member.voice.channel.id,
+      channelId: voiceChannelId,
       guildId: interaction.guild.id,
       adapterCreator: interaction.guild.voiceAdapterCreator,
     });
 
-    const ping = client.ws.ping;
+    try {
+      await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
+    } catch (error) {
+      connection.destroy();
+      return interaction.editReply('Falha ao entrar no canal de voz em 30 segundos, tente novamente mais tarde.');
+    }
 
-    const songUrl = 'https://open.spotify.com/intl-pt/track/7KVBqGLGhrEejVokzYd8vF?si=5dd5b67580ad4fae';
-
-    const stream = ytdl(songUrl, { filter: 'audioonly' });
-    const resource = createAudioResource(stream, { inputType: StreamType.Arbitrary });
+    const songUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Rick Astley - Never Gonna Give You Up
+    const stream = await ytdl(songUrl);
+    const resource = createAudioResource(stream);
     const player = createAudioPlayer();
+    player.setVolume(0.5);
     player.play(resource);
     connection.subscribe(player);
+
+    try {
+      await entersState(player, AudioPlayerStatus.Playing, 30_000);
+      return interaction.editReply('Agora está tocando!');
+    } catch (error) {
+      console.error(error);
+      return interaction.editReply('Falha ao reproduzir áudio em 30 segundos, tente novamente mais tarde.');
+    }
   }
 };
